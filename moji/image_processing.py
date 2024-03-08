@@ -16,6 +16,19 @@ def inferir_en_imagen(cliente, image_path, model_id):
 def obtener_segmentos(result):
     return result['predictions']
 
+def extraer_burbujas(img, info):
+
+    burbujas = []
+
+    for segment in info:
+
+        x, y, w, h = segment['x'], segment['y'], segment['width'], segment['height']
+        crop_img = img.crop((max(x - w / 2, 0), max(y - h / 2, 0), x + w / 2, y + h / 2))
+
+        burbujas.append(crop_img)
+
+    return burbujas
+
 def ajustar_imagen_subgráfico(ax, segment, img, target_size, idx):
     x, y, w, h = segment['x'], segment['y'], segment['width'], segment['height']
     rect = patches.Rectangle((x - w / 2, y - h / 2), w, h, linewidth=2, edgecolor='none', facecolor='none')
@@ -64,7 +77,7 @@ def plot_segments(image_path, num_cols=3, target_size=(200, 200), model_id=None,
 
     mostrar_grid(fig, axes)
 
-# Ejemplo de uso
-# pip install inference-sdk numpy Pillow matplotlib
-image_path = "/home/carol/code/cparran/MOJI/raw_data/Nana v01/003.jpg"
-plot_segments(image_path)
+# # Ejemplo de uso
+# # pip install inference-sdk numpy Pillow matplotlib
+# image_path = "/home/carol/code/cparran/MOJI/raw_data/Nana v01/003.jpg"
+# plot_segments(image_path)
