@@ -1,8 +1,9 @@
 from inference_sdk import InferenceHTTPClient
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+import textwrap
 
 def cargar_imagen(image_path):
     return Image.open(image_path)
@@ -81,3 +82,35 @@ def plot_segments(image_path, num_cols=3, target_size=(200, 200), model_id=None,
 # # pip install inference-sdk numpy Pillow matplotlib
 # image_path = "/home/carol/code/cparran/MOJI/raw_data/Nana v01/003.jpg"
 # plot_segments(image_path)
+
+def image_reinsertion(img, page_data, margin=0):
+
+    draw = ImageDraw.Draw(img)
+
+    #Se hace loop sobre ese numero de pagina en data
+
+    for bubble in page_data:
+
+        x = float(bubble['x'])
+        y = float(bubble['y'])
+        width = float(bubble['width'])
+        height = float(bubble['height'])
+
+        x1 = round(x - width / 2) + margin
+        y1 = round(y - height / 2) + margin
+        x2 = round(x + width / 2) - margin
+        y2 = round(y + height / 2) - margin
+
+        draw.rounded_rectangle([x1, y1, x2, y2], fill='white', radius=20 )
+
+        font = ImageFont.load_default()
+        spacing = 1
+        translated_text = bubble['translated_text']
+
+        wrapped_text = textwrap.fill(translated_text, width=15)
+
+        draw.multiline_text([x1, y1, x2, y2], wrapped_text, fill="black", spacing=spacing, align="left",font_size=35)
+
+    img.save('imagen_guardada.png')
+
+    return img

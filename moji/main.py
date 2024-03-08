@@ -9,7 +9,7 @@ from params import *
 if __name__ == '__main__':
 
     ## Importar imagen
-    PATH = os.path.join(LOCAL_DATA_PATH, 'Manga109s', 'Manga109s_released_2023_12_07', 'images', 'AisazuNihaIrarenai', '009.jpg')
+    PATH = os.path.join(LOCAL_DATA_PATH, 'Made in Abyss v01-20240306T135857Z-001/Made in Abyss v01/0008.jpg')
     image = image_processing.cargar_imagen(PATH)
 
     ## Extraer bubbles
@@ -31,4 +31,6 @@ if __name__ == '__main__':
         ### Translator
         image_info[i]['translated_text'] = traductor_xml.traducir_elemento(image_info[i]['text'])
 
-    
+    ### Image Reinsertion
+
+    new_image = image_processing.image_reinsertion(image, image_info)
