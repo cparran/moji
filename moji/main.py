@@ -33,4 +33,4 @@ if __name__ == '__main__':
 
     ### Image Reinsertion
 
-    
+    new_image = image_processing.image_reinsertion(image, image_info)
