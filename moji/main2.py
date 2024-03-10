@@ -1,7 +1,7 @@
-import roboflow_segmentation
-import image_processing
-import OCR_processing
-import traductor_xml
+import ml_logic.roboflow_segmentation as roboflow_segmentation
+import ml_logic.image_processing as image_processing
+import ml_logic.OCR_processing as OCR_processing
+import ml_logic.traductor_xml as traductor_xml
 import os
 from params import *
 import sys
@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 if __name__ == '__main__':
 
     ## Importar imagen
-    
+
 
     if __name__ == '__main__':
         # Carga de imagen
@@ -46,4 +46,3 @@ if __name__ == '__main__':
                 image_info[i]['translated_text'] = traductor_xml.traducir_elemento(image_info[i]['text'])
             ### Image Reinsertion
             new_image = image_processing.image_reinsertion(image, image_info)
-            

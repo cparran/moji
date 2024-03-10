@@ -1,7 +1,7 @@
-import roboflow_segmentation
-import image_processing
-import OCR_processing
-import traductor_xml
+import ml_logic.roboflow_segmentation as roboflow_segmentation
+import ml_logic.image_processing as image_processing
+import ml_logic.OCR_processing as OCR_processing
+import ml_logic.traductor_xml as traductor_xml
 import os
 import matplotlib.pyplot as plt
 from params import *

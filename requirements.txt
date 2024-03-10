@@ -1,1 +1,8 @@
 streamlit
+textwrap
+matplotlib
+numpy
+PIL
+inference_sdk
+manga_ocr
+deep_translator
