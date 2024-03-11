@@ -1,9 +1,14 @@
 import streamlit as st
-from PIL import Image, ImageOps 
+from PIL import Image, ImageOps, ImageChops
 import subprocess
 import tempfile
 import random
 import os
+import io
+
+# Generar una clave única para el file_uploader
+def generate_upload_key():
+    return os.urandom(24).hex()
 
 # Configuración de la página para un diseño minimalista
 st.set_page_config(page_title="MOJI", layout="centered")
@@ -22,21 +27,19 @@ background_images = [
 if 'selected_background' not in st.session_state:
     st.session_state.selected_background = random.choice(background_images)
 
-# Añadiendo CSS para la imagen de fondo seleccionada y para estilos adicionales
+# Añadiendo CSS para la imagen de fondo seleccionada y estilos adicionales
 st.markdown(f"""
 <style>
 .stApp {{
     background-image: url({st.session_state.selected_background});
     background-size: cover;
 }}
-/* Estilo para el fondo de texto transparente */
 .text-background {{
-    background-color: rgba(255, 255, 255, 0.8); /* Blanco con opacidad */
+    background-color: rgba(255, 255, 255, 0.8);  # Blanco con opacidad
     border-radius: 5px;
     padding: 10px;
     margin: 10px 0;
 }}
-/* Estilos para títulos y subtítulos */
 .title-text {{
     font-size: 32px;
     font-weight: bold;
@@ -48,17 +51,26 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # Textos y título
-st.markdown('<div class="text-background title-text">Moji - traductor de manga</div>', unsafe_allow_html=True)
-st.markdown('<div class="text-background subtitle-text">Carga una imagen de un manga en japonés y obtén su versión en español.</div>', unsafe_allow_html=True)
+st.markdown('<div class="text-background title-text">Moji - Traductor de Manga</div>', unsafe_allow_html=True)
+st.markdown('<div class="text-background subtitle-text">Carga una imagen de manga en japonés y obtén su versión en español.</div>', unsafe_allow_html=True)
 
-uploaded_file = st.file_uploader("Cargar imagen", type=["png", "jpg", "jpeg"])
+# Inicializar o actualizar la clave de carga si es necesario
+if 'upload_key' not in st.session_state or ('reset_uploader' in st.session_state and st.session_state.reset_uploader):
+    st.session_state.upload_key = generate_upload_key()
+    st.session_state.reset_uploader = False
+
+uploaded_file = st.file_uploader("Cargar imagen", type=["png", "jpg", "jpeg"], key=st.session_state.upload_key)
 
 # Crear un placeholder para la imagen
 image_placeholder = st.empty()
 
 if uploaded_file is not None:
+    if 'translated_image' in st.session_state:
+        # Limpiar la imagen traducida del estado si se carga una nueva imagen
+        del st.session_state['translated_image']
+        image_placeholder.empty()
+    
     st.session_state.original_image = Image.open(uploaded_file)
-    # Mostrar la imagen cargada utilizando el placeholder
     image_placeholder.image(st.session_state.original_image, caption="Imagen cargada", use_column_width=True)
     
     with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as tmp_file:
@@ -68,28 +80,30 @@ if uploaded_file is not None:
 
 if 'tmp_file_path' in st.session_state and st.button('Traducir'):
     with st.spinner('Procesando traducción...'):
-        # Ejecuta main.py pasando el path de la imagen temporal como argumento
-        process = subprocess.run(["python", "/home/carol/code/cparran/MOJI/moji/main.py", st.session_state.tmp_file_path], capture_output=True, text=True)
+        process = subprocess.run(["python", "moji/main.py", st.session_state.tmp_file_path], capture_output=True, text=True)
 
         if process.returncode == 0:
             translated_image_path = st.session_state.tmp_file_path.replace(".jpg", "_translated.jpg")
             if os.path.exists(translated_image_path):
                 st.session_state.translated_image = Image.open(translated_image_path)
+                st.session_state.reset_uploader = True  # Preparar para resetear la carga en la próxima interacción
             else:
                 st.error("La imagen traducida no se encontró o no pudo ser creada.")
         else:
             st.error(f"Hubo un error en la traducción del manga: {process.stderr}")
 
-# Slider y mezcla de imágenes solo si la traducción ha sido realizada
+# Muestra el slider y las imágenes solo si la traducción ha sido realizada
 if 'translated_image' in st.session_state:
-    # Slider para ajustar la mezcla
-    blend_factor = st.slider('Ajusta la mezcla entre la imagen original y la traducida', 0.0, 1.0, 0.5, key='blend_slider')
-    
-    # Mezclar las imágenes
-    blended_image = Image.blend(ImageOps.exif_transpose(st.session_state.original_image.convert("RGBA")), 
-                                ImageOps.exif_transpose(st.session_state.translated_image.convert("RGBA")), 
-                                alpha=blend_factor)
-    
-    # Actualizar la imagen mostrada con la mezcla en el mismo placeholder
-    image_placeholder.image(blended_image, caption="Imagen Mezclada", use_column_width=True)
-    
+    reveal_factor = st.slider('Desliza para revelar la imagen original', 0, 100, 50)
+    width, height = st.session_state.original_image.size
+    reveal_width = int((width * reveal_factor) / 100)
+
+    mask = Image.new("L", st.session_state.original_image.size, 0)
+    mask.paste(255, (reveal_width, 0, width, height))
+    composite_image = Image.composite(st.session_state.original_image, st.session_state.translated_image, mask)
+    image_placeholder.image(composite_image, caption="Desliza para revelar la imagen original", use_column_width=True)
+
+    img_buffer = io.BytesIO()
+    st.session_state.translated_image.save(img_buffer, format='JPEG')
+    img_buffer.seek(0)
+    st.download_button("Descargar traducción", img_buffer, "translated_image.jpg", "image/jpeg")
