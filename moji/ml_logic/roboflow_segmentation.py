@@ -3,7 +3,7 @@ from inference_sdk import InferenceHTTPClient
 def infer_on_image(image):
     # Configuración fija
     model_id = "manga-text-detection/2"
-    api_url = "http://detect.roboflow.com"
+    api_url = "https://detect.roboflow.com"
     api_key = "JVuvSUZ2T8BQEtoGVvtv"
 
     # Inicializar el cliente
@@ -20,6 +20,6 @@ def infer_on_image(image):
 # # Ejemplo de uso de la función
 # # ! pip install inference-sdk
 # # from roboflow_segmentation import infer_on_image
-# image_path = "/home/carol/code/cparran/MOJI/raw_data/Nana v01/003.jpg"
-# result = infer_on_image(image_path)
-# print(result)
+#image_path = "/Users/sarancibia/Downloads/Made in Abyss/Made in Abyss v01/CCF_0017.jpg"
+#result = infer_on_image(image_path)
+#print(result)
