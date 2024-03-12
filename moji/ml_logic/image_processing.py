@@ -83,7 +83,53 @@ def plot_segments(image_path, num_cols=3, target_size=(200, 200), model_id=None,
 # image_path = "/home/carol/code/cparran/MOJI/raw_data/Nana v01/003.jpg"
 # plot_segments(image_path)
 
-def image_reinsertion(img, page_data, margin=0):
+def image_reinsertion(img, page_data, margin=10):
+
+    draw = ImageDraw.Draw(img)
+
+    #Se hace loop sobre ese numero de pagina en data
+
+    for bubble in page_data:
+
+        x = float(bubble['x'])
+        y = float(bubble['y'])
+        width = float(bubble['width'])
+        height = float(bubble['height'])
+
+        x1 = round(x - width / 2) + margin
+        y1 = round(y - height / 2) + margin
+        x2 = round(x + width / 2) - margin
+        y2 = round(y + height / 2) - margin
+
+        #Se dibujan los rectangulos
+        draw.rounded_rectangle([x1, y1, x2, y2], fill='white', radius=50)
+
+        #Adjustes de la fuente
+        font_path = "/Users/sarancibia/Library/Fonts/BadComic-Regular.ttf"
+
+            #Tamaño de la fuente
+        #text_size_ratio = 0.009
+        #font_size = int(img.width * text_size_ratio)
+
+            #Importe de fuente
+        font = ImageFont.truetype(font_path, 25)
+        spacing = 1
+
+        translated_text = bubble['translated_text']
+
+        #Text wrapping
+        wrapped_text = textwrap.fill(translated_text, width=10)
+
+        box = draw.multiline_textbbox([x1,y1], wrapped_text, anchor= "la", align= "center", font_size= 25 )
+
+        #Se dibujan las multilineas
+        draw.multiline_text(box, wrapped_text, fill="black", spacing=spacing, align="center",font_size= 25, font=font)
+
+    img.save('imagen_guardada.png')
+
+    return img
+
+def image_reinsertion_trial(img, page_data, margin=0):
 
     draw = ImageDraw.Draw(img)
 
