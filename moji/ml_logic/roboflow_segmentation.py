@@ -16,10 +16,3 @@ def infer_on_image(image):
     result = CLIENT.infer(image, model_id)
 
     return result
-
-# # Ejemplo de uso de la función
-# # ! pip install inference-sdk
-# # from roboflow_segmentation import infer_on_image
-#image_path = "/Users/sarancibia/Downloads/Made in Abyss/Made in Abyss v01/CCF_0017.jpg"
-#result = infer_on_image(image_path)
-#print(result)
