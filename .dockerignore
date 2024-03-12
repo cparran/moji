@@ -1,0 +1,16 @@
+.git
+.cache
+.idea
+runs
+output
+coco
+storage.googleapis.com
+
+data/samples/*
+**/results*.csv
+*.jpg
+
+data
+front
+notebooks
+raw_data

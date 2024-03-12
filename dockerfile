@@ -2,19 +2,21 @@
 FROM python:3.10.6
 
 # Establecer el directorio de trabajo en el contenedor
-WORKDIR /app
+WORKDIR /moji
 
 # Copiar los archivos requeridos al contenedor
 COPY requirements.txt ./requirements.txt
-COPY app.py ./app.py
-# Si tienes más archivos o directorios necesarios para tu aplicación, inclúyelos aquí
-# COPY directory_or_file ./directory_or_file
-
 # Instalar las dependencias
 RUN pip install -r requirements.txt
 
-# Exponer el puerto en el que se ejecutará la aplicación
-EXPOSE 8501
+# Copiar repositorio
+COPY moji moji
+
+# Copiar setup.py
+COPY setup.py ./setup.py
+
+# Instalar proyecto localmente
+RUN pip install .
 
 # Comando para ejecutar la aplicación al iniciar el contenedor
-CMD ["streamlit", "run", "app.py"]
+CMD uvicorn main_api:app --host 0.0.0.0 --port $PORT
