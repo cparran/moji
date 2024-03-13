@@ -4,17 +4,13 @@ inference_sdk
 roboflow
 manga_ocr
 deep_translator
-roboflow
 
 #Procesamiento y análisis de imágenes
 Pillow
-pytesseract
+opencv-python
 
 #visualización
 matplotlib
-
-#interface
-streamlit
 
 # api
 fastapi

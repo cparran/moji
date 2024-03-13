@@ -8,12 +8,21 @@ WORKDIR /moji
 COPY requirements.txt ./requirements.txt
 # Instalar las dependencias
 RUN pip install -r requirements.txt
+RUN apt-get update \
+    && apt-get install -y libgl1-mesa-glx \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
 
 # Copiar repositorio
 COPY moji moji
 
 # Copiar setup.py
 COPY setup.py ./setup.py
+
+# Copiar main_api.py
+
+COPY main_api.py ./main_api.py
 
 # Instalar proyecto localmente
 RUN pip install .
