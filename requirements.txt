@@ -16,4 +16,5 @@ matplotlib
 fastapi
 uvicorn
 python-multipart
+requests
 
