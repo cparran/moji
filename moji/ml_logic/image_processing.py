@@ -105,7 +105,7 @@ def image_reinsertion(img, page_data, margin=10):
         draw.rounded_rectangle([x1, y1, x2, y2], fill='white', radius=50)
 
         #Adjustes de la fuente
-        font_path = "/Users/sarancibia/Library/Fonts/BadComic-Regular.ttf"
+        font_path = "moji/fonts/BadComic-Regular.ttf"
 
             #Tamaño de la fuente
         #text_size_ratio = 0.009

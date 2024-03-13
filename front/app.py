@@ -69,10 +69,10 @@ if uploaded_file is not None:
         # Limpiar la imagen traducida del estado si se carga una nueva imagen
         del st.session_state['translated_image']
         image_placeholder.empty()
-    
+
     st.session_state.original_image = Image.open(uploaded_file)
     image_placeholder.image(st.session_state.original_image, caption="Imagen cargada", use_column_width=True)
-    
+
     with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as tmp_file:
         st.session_state.original_image.save(tmp_file)
         tmp_file_path = tmp_file.name

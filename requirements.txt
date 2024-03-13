@@ -1,8 +1,19 @@
-streamlit
-textwrap
-matplotlib
+# Data Science + ML
 numpy
-PIL
 inference_sdk
+roboflow
 manga_ocr
 deep_translator
+
+#Procesamiento y análisis de imágenes
+Pillow
+opencv-python
+
+#visualización
+matplotlib
+
+# api
+fastapi
+uvicorn
+python-multipart
+
