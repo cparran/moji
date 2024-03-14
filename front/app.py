@@ -19,6 +19,7 @@ background_images = [
     "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/02af675a-dd3b-47f2-84bf-8b87d6a5496e/delq7ir-9828ae46-251f-4afc-ade5-a193113e6cf9.jpg/v1/fill/w_1192,h_670,q_70,strp/kamado_nezuko_chan_minimalism_wallpaper_by_rkimx_delq7ir-pre.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MjE2MCIsInBhdGgiOiJcL2ZcLzAyYWY2NzVhLWRkM2ItNDdmMi04NGJmLThiODdkNmE1NDk2ZVwvZGVscTdpci05ODI4YWU0Ni0yNTFmLTRhZmMtYWRlNS1hMTkzMTEzZTZjZjkuanBnIiwid2lkdGgiOiI8PTM4NDAifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6aW1hZ2Uub3BlcmF0aW9ucyJdfQ.G86NfySDt6ivEl4wZK7JKUTMxcun6cHgQ7KmKRdJ4F8",
     "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/02af675a-dd3b-47f2-84bf-8b87d6a5496e/de1110v-c45e4a82-9c04-422c-bada-e95698926011.jpg/v1/fill/w_1253,h_638,q_70,strp/mikasa_ackerman_minimalism_wallpaper_by_rkimx_de1110v-pre.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9Njk2IiwicGF0aCI6IlwvZlwvMDJhZjY3NWEtZGQzYi00N2YyLTg0YmYtOGI4N2Q2YTU0OTZlXC9kZTExMTB2LWM0NWU0YTgyLTljMDQtNDIyYy1iYWRhLWU5NTY5ODkyNjAxMS5qcGciLCJ3aWR0aCI6Ijw9MTM2NiJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19.IhlCl6EikR-6EzrsVy7L6wULO4kreU9KZnr0oMR6FDI",
     "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/02af675a-dd3b-47f2-84bf-8b87d6a5496e/depow31-44cecd43-0603-453d-980a-a4174770d1cf.jpg/v1/fill/w_1192,h_670,q_70,strp/luffy_d__monkey_minimalism_wallpaper_by_rkimx_depow31-pre.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9NzIwIiwicGF0aCI6IlwvZlwvMDJhZjY3NWEtZGQzYi00N2YyLTg0YmYtOGI4N2Q2YTU0OTZlXC9kZXBvdzMxLTQ0Y2VjZDQzLTA2MDMtNDUzZC05ODBhLWE0MTc0NzcwZDFjZi5qcGciLCJ3aWR0aCI6Ijw9MTI4MCJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19.s_ViDGQRazgeiga1LoWy-NYZoP1PqBtF3ueQQgX5wRg",
+    "https://mrwallpaper.com/images/high/dragon-ball-goku-cloud-otd17bxj2w3tn8rh.webp",
     # Añade tantas URLs como quieras
 ]
 
@@ -91,14 +92,15 @@ if 'processed_image_bytes' in st.session_state:
     mask.paste(255, (reveal_width, 0, width, height))
     composite_image = Image.composite(st.session_state.original_image.convert("RGBA"), processed_image, mask)
     
-    st.image(composite_image, caption="Desliza para revelar la imagen original", use_column_width=True)
+    st.image(composite_image, use_column_width=True)
 
-    # Botón de descarga para la imagen procesada
-    if st.button("Descargar imagen procesada", key="download_button"):
+    # Botón de descarga para la imagen procesada directamente sin necesidad de presionar otro botón
+    # Creando cinco columnas con proporciones que centran el botón
+    col1, col2, col3, col4, col5 = st.columns([1,1,2,1,1])
+
+    # Colocando el botón en la columna del centro (tercera columna)
+    with col3:
         st.download_button(label="Descargar imagen procesada",
-                           data=st.session_state.processed_image_bytes,
-                           file_name="processed_image.jpg",
-                           mime="image/jpeg",
-                           help="Haz clic para descargar la imagen procesada",
-                           help_container=".stApp",
-                           layout="centered")
+                        data=st.session_state.processed_image_bytes,
+                        file_name="processed_image.jpg",
+                        mime="image/jpeg")
