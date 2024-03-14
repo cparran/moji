@@ -5,6 +5,7 @@ import tempfile
 import random
 import os
 import io
+import requests
 
 # Generar una clave única para el file_uploader
 def generate_upload_key():
@@ -80,7 +81,8 @@ if uploaded_file is not None:
 
 if 'tmp_file_path' in st.session_state and st.button('Traducir'):
     with st.spinner('Procesando traducción...'):
-        process = subprocess.run(["python", "moji/main.py", st.session_state.tmp_file_path], capture_output=True, text=True)
+        URL_API = ""
+        process = requests.post(URL_API, images=st.session_state.original_image)
 
         if process.returncode == 0:
             translated_image_path = st.session_state.tmp_file_path.replace(".jpg", "_translated.jpg")
