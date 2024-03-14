@@ -1,10 +1,9 @@
 import streamlit as st
-from PIL import Image, ImageOps, ImageChops
-import subprocess
-import tempfile
+from PIL import Image
+import requests
+from io import BytesIO
 import random
 import os
-import io
 
 # Generar una clave única para el file_uploader
 def generate_upload_key():
@@ -59,51 +58,44 @@ if 'upload_key' not in st.session_state or ('reset_uploader' in st.session_state
     st.session_state.upload_key = generate_upload_key()
     st.session_state.reset_uploader = False
 
-uploaded_file = st.file_uploader("Cargar imagen", type=["png", "jpg", "jpeg"], key=st.session_state.upload_key)
-
-# Crear un placeholder para la imagen
-image_placeholder = st.empty()
+# Cargar la imagen
+uploaded_file = st.file_uploader("Carga una imagen", type=["png", "jpg", "jpeg"], key=st.session_state.upload_key)
 
 if uploaded_file is not None:
-    if 'translated_image' in st.session_state:
-        # Limpiar la imagen traducida del estado si se carga una nueva imagen
-        del st.session_state['translated_image']
-        image_placeholder.empty()
-
-    st.session_state.original_image = Image.open(uploaded_file)
-    image_placeholder.image(st.session_state.original_image, caption="Imagen cargada", use_column_width=True)
-
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as tmp_file:
-        st.session_state.original_image.save(tmp_file)
-        tmp_file_path = tmp_file.name
-        st.session_state.tmp_file_path = tmp_file_path
-
-if 'tmp_file_path' in st.session_state and st.button('Traducir'):
-    with st.spinner('Procesando traducción...'):
-        process = subprocess.run(["python", "moji/main.py", st.session_state.tmp_file_path], capture_output=True, text=True)
-
-        if process.returncode == 0:
-            translated_image_path = st.session_state.tmp_file_path.replace(".jpg", "_translated.jpg")
-            if os.path.exists(translated_image_path):
-                st.session_state.translated_image = Image.open(translated_image_path)
-                st.session_state.reset_uploader = True  # Preparar para resetear la carga en la próxima interacción
-            else:
-                st.error("La imagen traducida no se encontró o no pudo ser creada.")
+    if 'processed_image_bytes' not in st.session_state or st.session_state.get('last_uploaded_file') != uploaded_file.name:
+        # Guarda la imagen original en el estado de la sesión
+        st.session_state.original_image_bytes = uploaded_file.getvalue()
+        st.session_state.original_image = Image.open(BytesIO(st.session_state.original_image_bytes))
+        
+        # Procesa la imagen
+        with st.spinner('Procesando imagen...'):
+            files = {"file": (uploaded_file.name, st.session_state.original_image_bytes, uploaded_file.type)}
+            response = requests.post("https://mojiapi-za5dquei2a-ew.a.run.app/process-image/", files=files)
+        
+        if response.status_code == 200:
+            st.session_state.processed_image_bytes = response.content
+            st.session_state.last_uploaded_file = uploaded_file.name
         else:
-            st.error(f"Hubo un error en la traducción del manga: {process.stderr}")
+            st.error("Error al procesar la imagen.")
 
-# Muestra el slider y las imágenes solo si la traducción ha sido realizada
-if 'translated_image' in st.session_state:
+# Muestra el slider y las imágenes solo si la imagen ha sido procesada
+if 'processed_image_bytes' in st.session_state:
     reveal_factor = st.slider('Desliza para revelar la imagen original', 0, 100, 50)
     width, height = st.session_state.original_image.size
     reveal_width = int((width * reveal_factor) / 100)
-
-    mask = Image.new("L", st.session_state.original_image.size, 0)
+    
+    # Prepara la imagen procesada
+    processed_image = Image.open(BytesIO(st.session_state.processed_image_bytes)).convert("RGBA")
+    
+    mask = Image.new("L", (width, height), 0)
     mask.paste(255, (reveal_width, 0, width, height))
-    composite_image = Image.composite(st.session_state.original_image, st.session_state.translated_image, mask)
-    image_placeholder.image(composite_image, caption="Desliza para revelar la imagen original", use_column_width=True)
+    composite_image = Image.composite(st.session_state.original_image.convert("RGBA"), processed_image, mask)
+    
+    st.image(composite_image, caption="Desliza para revelar la imagen original", use_column_width=True)
 
-    img_buffer = io.BytesIO()
-    st.session_state.translated_image.save(img_buffer, format='JPEG')
-    img_buffer.seek(0)
-    st.download_button("Descargar traducción", img_buffer, "translated_image.jpg", "image/jpeg")
+    # Botón de descarga para la imagen procesada
+    if st.button("Descargar imagen procesada"):
+        st.download_button(label="Descargar imagen procesada",
+                           data=st.session_state.processed_image_bytes,
+                           file_name="processed_image.jpg",
+                           mime="image/jpeg")

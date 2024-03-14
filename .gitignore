@@ -138,3 +138,5 @@ data/
 # data/**
 # Ignorar todos los archivos .DS_Store, independientemente de su ubicación
 **/.DS_Store
+front/secrets.toml
+secrets.toml
