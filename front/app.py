@@ -5,12 +5,16 @@ from io import BytesIO
 import random
 import os
 
+# Asegúrate de que el archivo 'front/favicon.png' exista en tu proyecto
+favicon_path = "front/favicon.png"
+favicon_image = Image.open(favicon_path)
+
+# Configuración de la página para un diseño minimalista con Favicon
+st.set_page_config(page_title="MOJI", layout="centered", page_icon=favicon_image)
+
 # Generar una clave única para el file_uploader
 def generate_upload_key():
     return os.urandom(24).hex()
-
-# Configuración de la página para un diseño minimalista
-st.set_page_config(page_title="MOJI", layout="centered")
 
 # Lista de URLs de las imágenes de fondo
 background_images = [
