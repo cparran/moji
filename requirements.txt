@@ -16,4 +16,7 @@ matplotlib
 fastapi
 uvicorn
 python-multipart
+requests
 
+# Cloud
+google-cloud-storage
