@@ -80,7 +80,7 @@ if uploaded_file is not None:
 
 # Muestra el slider y las imágenes solo si la imagen ha sido procesada
 if 'processed_image_bytes' in st.session_state:
-    reveal_factor = st.slider('Desliza para revelar la imagen original', 0, 100, 50)
+    reveal_factor = st.slider('Desliza para revelar la imagen original', 0, 100, 100)
     width, height = st.session_state.original_image.size
     reveal_width = int((width * reveal_factor) / 100)
     
@@ -94,8 +94,11 @@ if 'processed_image_bytes' in st.session_state:
     st.image(composite_image, caption="Desliza para revelar la imagen original", use_column_width=True)
 
     # Botón de descarga para la imagen procesada
-    if st.button("Descargar imagen procesada"):
+    if st.button("Descargar imagen procesada", key="download_button"):
         st.download_button(label="Descargar imagen procesada",
                            data=st.session_state.processed_image_bytes,
                            file_name="processed_image.jpg",
-                           mime="image/jpeg")
+                           mime="image/jpeg",
+                           help="Haz clic para descargar la imagen procesada",
+                           help_container=".stApp",
+                           layout="centered")
