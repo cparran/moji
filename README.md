@@ -29,6 +29,7 @@ Cleaning and Reinsertion of Translated Text: Thanks to [Pillow](https://pypi.org
 MOJI uses the following libraries and resources:
 
 **manga-ocr**: For Japanese character recognition.
+
 **deep_translator**: For automatic translation.
 
 And other Python libraries specified in the requirements.txt file.
