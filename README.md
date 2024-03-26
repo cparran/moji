@@ -1,20 +1,43 @@
+<div align="center">
+    <img src="front/favicon.png" alt="MOJI">
+</div>
+
 # MOJI
-MOJI es un ambicioso proyecto dedicado a facilitar la experiencia de lectura de mangas japoneses para hablantes de español. Basado en técnicas avanzadas de aprendizaje profundo (Deep Learning), MOJI aborda dos desafíos clave: el reconocimiento óptico de caracteres (OCR) para extraer texto de páginas de manga y la traducción precisa de ese texto al español. Con un enfoque principalmente supervisado, el proyecto utiliza modelos de entrenamiento, como Redes Neuronales Convolucionales (CNN) para OCR y Redes Neuronales Recurrentes (RNN) o modelos Transformer para la traducción.
+MOJI is a project aimed at enhancing the reading experience of Japanese mangas for Spanish speakers. Utilizing advanced Machine Learning techniques, MOJI tackles key challenges such as text segmentation in images, optical character recognition (OCR) to extract text from manga pages, translation of the text into Spanish, image cleaning, and reinsertion of the translated text into the image.
 
-# Componentes Claves
+## Project Development
 
-Entrada (X): MOJI comienza con imágenes de páginas de manga como entrada. Estas imágenes se someten a un proceso de segmentación para identificar y aislar bloques de texto (text bubbles y text-free), transformando efectivamente el problema en uno de procesamiento de texto.
+Segmentation Model: With Roboflow's assistance, an image segmentation model was trained to identify text, using a dataset of 500 Japanese manga images, which contained 4,028 annotations divided into two classes: text_bubble and text_free. More information is available at Roboflow's Universe.
 
-Salida (Y): Para el OCR, la salida se conceptualiza como clases, donde cada clase representa un carácter o conjunto de caracteres reconocidos. En la etapa de traducción, la salida es el texto traducido al español, representado por secuencias de texto.
+OCR Model: Due to the time constraint for the project development (8 days), the specialized library [Manga OCR](https://github.com/kha-white/manga-ocr) was used.
 
-Aprendizaje Automático (ML): MOJI adopta un enfoque de aprendizaje profundo, utilizando CNN para el reconocimiento de texto en imágenes, dada su eficacia en tareas de visión por computadora. Para la traducción de texto, se consideran modelos como RNN o Transformer, aprovechando la atención y la capacidad de manejar secuencias de texto complejas.
+Text Translation: For translating the text obtained via OCR, the [deep-translator](https://github.com/nidhaloff/deep-translator) library was utilized.
 
-# Desarrollo del Proyecto
+Cleaning and Reinsertion of Translated Text: Thanks to [Pillow](https://pypi.org/project/pillow/) and [OpenCV](https://pypi.org/project/opencv-python/) libraries, it was possible to perform image cleaning and reinsertion of the translated text.
 
-Entrenamiento del Modelo: La fase inicial implica el entrenamiento de modelos, especialmente en OCR, donde se requiere una cantidad significativa de datos etiquetados para reconocer con precisión caracteres en imágenes.
+## Results
 
-Exploración y Visualización: Aunque la exploración y visualización no son el enfoque principal, se pueden realizar análisis iniciales para comprender mejor los datos de manga, optimizando así la eficiencia del proceso.
+### Original Image
 
-Implementación de Traducción: Una vez extraído el texto mediante OCR, MOJI emplea técnicas avanzadas de traducción utilizando modelos de aprendizaje profundo, permitiendo una experiencia de lectura fluida y comprensible para los usuarios de habla hispana.
+![Imagen Original](moji/example/original_image.jpg)
 
-MOJI, como proyecto pionero en la convergencia de tecnologías de OCR y traducción automática, tiene el potencial de transformar la accesibilidad y disfrute de los mangas japoneses para una audiencia más amplia.
+### Translated Image
+![Imagen Traducida](moji/example/processed_image.jpg)
+
+## Credits
+
+MOJI uses the following libraries and resources:
+
+**manga-ocr**: For Japanese character recognition.
+**deep_translator**: For automatic translation.
+
+And other Python libraries specified in the requirements.txt file.
+
+Developers of these libraries are thanked for their contributions.
+
+## Colaboradores
+MOJI has been developed and maintained by the following contributors:
+
+- [Carolina Parra](https://github.com/cparran)
+- [Felipe Stuardo](https://github.com/felipe-stuardo)
+- [Sara Arancibia](https://github.com/sarabarancibiag)
